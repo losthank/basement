@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+		#aside{
+			width: 100px;
+			height: 100px;
+			background:#f66;
+			float: left;
+			margin-right: 5px;/*两栏之间间隔设置在这里更好*/
+		}
+		#main{
+height: 150px;
+background: #fcc;
+overflow: hidden;/*生成独立的BFC（不加的话在同一个BFC内），自适应两栏布局实现，不会与float box重合*/
+		}
+		.par{
+			width: 300px;
+			background: #f78;
+			border: 1px solid red;
+			overflow: hidden;/*触发par的BFC，此时浮动元素也参与计算高度*/
+		}
+		.child{
+			width: 130px;
+			height: 100px;
+			float: left;
+			border: 2px solid red;
+		}
+		ul{
+			display: flex;
+		}
+		li{
+			height:50px;
+			width: 100px;
+			background: #f55;
+			flex-shrink: 0;
+		}
+		li:hover::before{content: "\5B";left:-20px;}/*添加了方括号显现*/
+	</style>
+</head>
+<body>
+<!--　　BFC布局规则：
+
+内部的Box会在垂直方向，一个接一个地放置。
+Box垂直方向的距离由margin决定。属于同一个BFC的两个相邻Box的margin会发生重叠
+每个元素的margin box的左边， 与包含块border box的左边相接触(对于从左往右的格式化，否则相反)。即使存在浮动也是如此。
+BFC的区域不会与float box重叠。
+BFC就是页面上的一个隔离的独立容器，容器里面的子元素不会影响到外面的元素。反之也如此。
+计算BFC的高度时，浮动元素也参与计算
+生成BFC的元素：
+根元素
+float属性不为none
+position为absolute或fixed
+display为inline-block, table-cell, table-caption, flex, inline-flex
+overflow不为visible
+作用：
+防止浮动元素覆盖其他元素
+可以包含浮动元素
+margin重叠问题（分属不同BFC的两个块级元素不会重叠）【略】
+flex:http://www.ruanyifeng.com/blog/2015/07/flex-grammar.html
+-->
+<div id="aside"></div>
+<div id="main"></div>
+<div class="par">
+	<div class="child"></div>
+	<div class="child"></div>
+</div>
+<ul>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+	<li></li>
+</ul>
+</body>
+</html>

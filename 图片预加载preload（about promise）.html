@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>Promise</title>
+  <style>
+    .pic{
+      width: 300px;
+      margin: 0 auto;
+    }
+    .pic img{
+      display: block;
+      width: 100%;
+    }
+    .loading{
+      text-align: center;
+      font-size: 14px;
+      color: #111;
+    }
+  </style>
+</head>
+<body>
+  <div class="wrap">
+  <div class="loading">正在加载...</div>
+    <div class="pic">
+    </div>
+  </div>
+  <script>
+    //预加载实际是先读取图片再加载，全部加载完毕再执行后续诸如显示等操作
+  var urls = ['1.jpg','2.jpg','3.jpg'];
+  //异步加载图片
+  function loadImg(url){
+    return new Promise((resolve,reject)=>{
+    var img = new Image();
+    img.onload = function(){
+    resolve(img);//图像加载时把img作为参数传给resolve
+}
+    img.onerror = reject;
+    img.src = url;//先读取url
+    }
+    )
+  };
+let promise = Promise.resolve();//必须在循环体外，否则每次循环重新定义promise- -
+for(let i = 0;i<urls.length;i++){
+  if(i === urls.length-1){document.querySelector('.loading').style.display = 'none';}//写完了就隐藏“正在加载”（其实提前了一个url哈哈）。放在递归里隐藏就得加一个then
+ promise = promise.then(()=>loadImg(urls[i])).then(addHtml);
+}
+ function addHtml(img){
+    document.querySelector('.pic').appendChild(img);
+  }
+  //最原始的实现，一个个添加
+/*loadImg(urls[0])
+.then(addHtml)
+.then(()=>loadImg(urls[1]))
+.then(addHtml);*/
+
+//递归实现
+/*(function digui(index){
+if(index>=urls.length)return;
+loadImg(urls[index]).then(img=>{addHtml(img);digui(index+1);}).then(()=>{document.querySelector('.loading').style.display = 'none';})
+})();*/
+
+  //全部加载完再一起显示（Promise.all并发请求）
+  /*Promise.all([loadImg(urls[0],loadImg(urls[1]),loadImg(urls[2]))])
+  .then(addHtml);
+  function addHtml(imgs){//注意.all传入的是数组,我用了forEach来写
+    imgs.forEach((img)=>{document.querySelector('.pic').appendChild(img);});
+  }*/
+
+  //加载前十张输出‘加载完’，再加载后十张输出‘加载完’
+/*  let index = 1;
+  const urlsFirst=[],urlsSecond=[];
+  while(index<10){
+  urlsFirst.push(`${index}.jpg`);//注意模板字符串的使用！
+  index+=1;
+}//之后同上*/
+
+  </script>
+</body>
+</html>

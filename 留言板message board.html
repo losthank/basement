@@ -1,0 +1,111 @@
+<!DOCTYPE>
+<html>
+
+<head>
+    <style>
+        /*主要使用添加删减子元素父元素标签来实现*/
+        
+        .box {
+            width: 800px;
+        }
+        
+        textarea {
+            width: 800px;
+        }
+        
+        .user {
+            list-style: none;
+            padding: 0;
+        }
+        
+        #li {
+            width: 800px;
+        }
+        
+        #text {
+            word-break: break-all;
+            width: 800px;
+        }
+        
+        #del {
+            /*时间和删除功能放在同一行，没有加入回复功能*/
+            display: inline-block;
+            position: relative;
+            left: 570px;
+            width: 100px;
+            color: blue;
+            font-size: 12px;
+        }
+        
+        #time {
+            display: inline-block;
+            width: 200px;
+            color: grey;
+            font-size: 12px;
+        }
+        
+        #img {
+            width: 50px;
+            height: 50px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="box">
+        <textarea class="text" rows="10"></textarea>
+        <input type="button" value="提交" class="submit">
+        <ul class="user"></ul>
+    </div>
+
+    <script>
+        var input = document.querySelector('.text');
+        var submit = document.querySelector('.submit');
+        var user = document.querySelector('.user');
+        var formatDate = function(date) { //当天时间计算（此处没有换算成几分钟前，因为没有连接服务器端，永远都是同步，没法更新）
+            var m = '今天';
+            var h = date.getHours();
+            var minute = date.getMinutes();
+            minute = minute < 10 ? ('0' + minute) : minute;
+            date = m + ' ' + h + ':' + minute;
+            return date;
+        };
+        submit.onclick = () => {
+            var li = document.createElement('li');
+            //头像
+            var urls = ['1.jpg', '2.jpg', '3.jpg'];
+            var name = ['hank', 'meme', 'he'];
+            var photo = document.createElement('img');
+            var namee = document.createTextNode(name[Math.floor(Math.random() * 3)]);
+            photo.id = 'img';
+            photo.src = urls[Math.floor(Math.random() * 3)];
+            li.appendChild(photo);
+            li.appendChild(namee);
+            //text
+            var text = document.createElement('div');
+            li.id = 'li';
+            text.id = 'text';
+            text.innerHTML = input.value;
+            user.appendChild(li);
+            li.appendChild(text);
+            //time
+            var time = new Date();
+            var timee = formatDate(time);
+            var timeee = document.createElement('div');
+            timeee.id = 'time';
+            timeee.innerHTML = timee;
+            li.appendChild(timeee);
+            //delete
+            var del = document.createElement("a");
+            li.appendChild(del);
+            del.id = 'del';
+            del.innerHTML = "删除";
+            del.onclick = function() {
+                user.removeChild(this.parentNode);
+            };
+
+        };
+    </script>
+</body>
+
+</html>

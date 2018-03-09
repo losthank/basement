@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html>
+
+<head lang="en">
+    <meta charset="UTF-8">
+    <title></title>
+    <style>
+        #box {
+            width: 320px;
+        }
+        
+        #box li {
+            list-style: none;
+            text-align: center;
+            display: inline-block;
+            width: 100px;
+        }
+        
+        #box ul {
+            /*标签和下方div块对齐*/
+            padding: 0;
+            margin-bottom: 0;
+        }
+        
+        #box div {
+            /*初始化*/
+            width: 310px;
+            height: 500px;
+            display: none;
+        }
+        
+        #box div:nth-child(2) {
+            display: block;
+            background-color: grey;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="box">
+        <ul>
+            <li class="on" style="background-color:grey;">标签一</li>
+            <!--初始化-->
+            <li>标签二</li>
+            <li>标签三</li>
+        </ul>
+        <div>好丑的背景色</div>
+        <div>好丑的背景色</div>
+        <div>好丑的背景色</div>
+    </div>
+    <script>
+        var tabs = document.getElementsByTagName('li'),
+            contents = document.querySelectorAll('#box div');
+
+        for (var i = 0; i < tabs.length; i += 1) {
+            tabs[i].index = i; //添加索引，嵌套循环
+            tabs[i].onclick = function() {
+                for (var i = 0; i < contents.length; i++) {
+                    contents[i].style.display = 'none';
+                } //先清除 
+                for (var i = 0; i < tabs.length; i++) {
+                    tabs[i].style.backgroundColor = '';
+                } //先清除 
+                //为什么类名替换失败？contents[1].className = 'show';
+                tabs[this.index].style.backgroundColor = 'grey'; //this指向点击的那个tab
+                contents[this.index].style.display = 'block';
+
+                contents[0].style.backgroundColor = 'grey';
+                contents[1].style.backgroundColor = 'red';
+                contents[2].style.backgroundColor = 'pink';
+            }
+        }
+    </script>
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE>
+<html>
+
+<head></head>
+
+<body>
+    <input id="xx" type="button" value="caooososoasoa">
+    <script>
+        //DOM自定义事件
+        //根据按下按钮的时间来判断执行的事件
+        //封装自定义事件部分
+        function longPress(target, intervalTime) { //target目标DOM,即节点
+            var timer;
+            var eve = document.createEvent('Event');
+            eve.initEvent('long', true, true); //初始化。long为事件类型（type）
+            target.addEventListener('mousedown', function() {
+                timer = Date.now();
+            }, false);
+            target.addEventListener('mouseup', function() {
+                if (Date.now() - timer > intervalTime) {
+                    eve.interval = Date.now() - timer; //可将其作为事件属性
+                    target.dispatchEvent(eve); //给节点分配一个事件
+                }
+            }, false);
+        }
+        var a = document.getElementById('xx');
+        longPress(a, 1000); //节点添加两个事件监听器
+        a.addEventListener('long', function(e) {
+            console.log(e.interval); //e指的是a上面绑定的事件
+        }, false)
+        var b = document.getElementById('yy');
+        longPress(b, 2000);
+        b.addEventListener('long', function(e) {
+            console.log(e.interval);
+        })
+    </script>
+</body>
+
+</html>

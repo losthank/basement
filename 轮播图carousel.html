@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title></title>
+	<style type="text/css">
+	#box{width: 960px;height: 540px;border: 1px solid grey;position: relative;overflow: hidden;}
+	#list{position: absolute;width: 4800px;height: 540px;}/*5张图片宽度*/
+	#list img{float: left;width:960px;height: 540px;}
+	#prev{left: 20px;}
+	#next{right: 20px;}
+	.arrow{position: absolute;top:230px;font-size: 50px;z-index: 1000;color: red;}
+	#button{position: absolute;left: 400px;bottom: 20px;
+		z-index: 1000;height: 10px;width: 200px;}
+	#button span{float: left;width: 10px;height: 10px;margin-left:30px;border: 1px solid black;background-color:#333; }
+	#button .on{background-color: orangered;}/*为何不能去掉#button*/
+	</style>
+</head>
+
+<body>
+<div id="box">
+<div id="list" style="left: 0px"><!--style.left必须是内联样式-->
+	<img src="1.jpg" >
+	<img src="2.jpg" >
+	<img src="3.jpg" >
+	<img src="4.jpg" >
+	<img src="1.jpg" >
+</div>
+<div id="button">
+<span index="0" class="on"></span>
+<span index="1"></span>
+<span index="2"></span>
+<span index="3"></span>
+
+</div>
+<div href="" id="prev" class="arrow">&lt;</div>
+<div href="" id="next" class="arrow">&gt;</div>   
+</div>
+<script type="text/javascript">
+var list = document.getElementById('list');//为啥必须div而不能a啊！？
+var prev = document.getElementById('prev');
+var next = document.getElementById('next');
+var box = document.getElementById('box');
+var button = document.getElementById('button').getElementsByTagName('span');
+var timer;
+var index = 0;
+//button click
+for(var i=0;i<button.length;i+=1){
+	(function(i){
+    button[i].onclick = function(){
+	console.log(index);
+    var goIndex = parseInt(this.getAttribute('index'));
+    var newL = parseInt(list.style.left) + (index-goIndex)*960;
+    list.style.left = newL + 'px';//点击直接跳转即可
+    index = goIndex;
+    buttonShow();//点击后颜色对应
+	}
+})(i);//闭包存储每个按钮的点击事件
+}
+//button颜色显示
+function buttonShow(){
+	for(var i = 0;i<button.length;i+=1){
+		button[i].className = '';
+	    }//每次执行都清除原有选中按钮，这样只需考虑所在位置即可。下述注释方法不适合控制后退
+	button[index].className = 'on';
+}
+	/*if(index===0){button[3].className = '';;button[index].className = 'on';}
+	else{
+	button[index-1].className = '';
+	button[index].className = 'on';
+	}*/	
+//向左向右
+prev.onclick = function(){
+	index-=1;
+	if(index<0){index = 3;}
+	buttonShow();
+	move(960);
+};
+next.onclick = function(){
+	index+=1;
+	if(index>3){index = 0;}//跳转开头切换
+	buttonShow();
+	move(-960);
+};
+//轮播&鼠标悬浮停止
+function play(){
+	timer = setInterval(function(){next.onclick()},1800)//多设置一段时间，以便停滞
+};
+function stop(){
+clearInterval(timer);
+}
+//动画切换（慢慢循环滑动）
+function move(offset){
+    var speed = offset/100;
+	var newLeft = parseInt(list.style.left)+offset;//obj.offsetLeft取得position中的left值，只读，不能赋值！
+	var animate = function(){
+	if(newLeft===960){
+	list.style.left = -3840 + 'px';
+	newLeft = -2880;
+	}//反向衔接图片*/
+	if((speed > 0 && parseInt(list.style.left) < newLeft) || (speed < 0 && parseInt(list.style.left) > newLeft)){
+			list.style.left = parseInt(list.style.left)+speed+'px';
+			setTimeout(animate,10);
+		}else if(newLeft!==-3840){list.style.left = newLeft+"px";//不满足条件意味着到达临界点
+	          }else{
+		            list.style.left = 0;//最后一张还没动就直接切换到第一张！
+                   }
+}
+animate();
+}//开其他网页很久再回来 偶发界面空白？！
+//执行
+play();
+window.onblur = function(){stop();};
+window.onfocus = function(){play();};
+box.addEventListener('mouseover',stop);
+box.addEventListener('mouseout',play);
+prev.addEventListener('mouseover',function(){prev.style.backgroundColor = 'grey';}); 
+prev.addEventListener('mouseout',function(){prev.style.backgroundColor = '';}); 
+next.addEventListener('mouseover',function(){next.style.backgroundColor = 'grey';}); 
+next.addEventListener('mouseout',function(){next.style.backgroundColor = '';});      
+</script>
+</body>
+</html>
